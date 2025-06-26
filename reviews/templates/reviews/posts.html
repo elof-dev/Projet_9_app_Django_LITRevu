@@ -1,0 +1,18 @@
+{% extends 'reviews/base.html' %}
+{% block page_header_title %}Vos posts{% endblock %}
+
+{% block content %}
+<section role="main" aria-label="Vos publications">
+  {% for post in posts %}
+    <article class="mb-4">
+      {% if post.content_type == 'TICKET' %}
+        {% include "reviews/partials/ticket_snippet.html" with post=post %}
+      {% elif post.content_type == 'REVIEW' %}
+        {% include "reviews/partials/review_snippet.html" with post=post %}
+      {% endif %}
+    </article>
+  {% empty %}
+    <p>Vous n'avez encore rien publié.</p>
+  {% endfor %}
+</section>
+{% endblock %}

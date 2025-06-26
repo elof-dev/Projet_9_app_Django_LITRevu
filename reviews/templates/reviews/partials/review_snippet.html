@@ -1,0 +1,58 @@
+<!-- Conteneur principal de la carte de critique -->
+<article class="p-2 border border-black" role="article" aria-label="Critique de {{ post.headline }}">
+
+  <!-- En-tête : auteur de la critique et date de publication -->
+  <header class="flex justify-between mb-2">
+    {% if post.user == request.user %}
+      <p>Vous avez publié une critique</p>
+    {% else %}
+      <p>{{ post.user.username }} a publié une critique</p>
+    {% endif %}
+    <time datetime="{{ post.time_created|date:'c' }}">{{ post.time_created|date:"H:i, d F Y" }}</time>
+  </header>
+
+  <!-- Titre de la critique -->
+  <h2 class="text-lg font-semibold mt-1 flex items-center">
+    <span>{{ post.headline }}</span>
+    <span class="ml-2" aria-label="Note : {{ post.rating }} sur 5 étoiles">
+      – {% for i in "12345"|slice:":5" %}
+          {% if forloop.counter <= post.rating %}★{% else %}☆{% endif %}
+        {% endfor %}
+    </span>
+  </h2>
+
+  <!-- Corps de la critique (texte) -->
+  {% if post.body %}
+    <div class="mt-2">
+      <p>{{ post.body }}</p>
+    </div>
+  {% endif %}
+
+  <!-- Section du ticket lié à la critique -->
+  <section class="border border-black mt-4 p-3" aria-label="Livre critiqué">
+    <header>
+      <p>Ticket - {{ post.ticket.user.username }}</p>
+      <h3 class="font-semibold">{{ post.ticket.title }}</h3>
+    </header>
+    {% if post.ticket.description %}
+      <p class="mt-1">{{ post.ticket.description }}</p>
+    {% endif %}
+    {% if post.ticket.image %}
+      <img src="{{ post.ticket.image.url }}" alt="Couverture de {{ post.ticket.title }}" class="mt-3 max-w-[200px]">
+    {% endif %}
+  </section>
+
+  <!-- Boutons modifier et supprimer seulement si c'est le bon utilisateur ET dans l'onglet posts -->
+  {% if post.user == request.user and is_posts_page %}
+    <footer class="flex justify-end gap-4 mt-4">
+      <a href="{% url 'edit_review' post.id %}" class="px-4 py-1 border border-black rounded hover:bg-gray-100"
+         aria-label="Modifier cette critique">Modifier</a>
+      <!-- Fenêtre de suppression avec confirmation -->
+      <form method="post" action="{% url 'delete_review' post.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette critique ?');">
+        {% csrf_token %}
+        <button type="submit" class="px-4 py-1 border border-black rounded hover:bg-gray-100"
+                aria-label="Supprimer cette critique">Supprimer</button>
+      </form>
+    </footer>
+  {% endif %}
+</article>

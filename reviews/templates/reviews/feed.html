@@ -1,0 +1,32 @@
+{% extends 'reviews/base.html' %}
+
+{% block content %}
+
+<section class="flex justify-center gap-16 mb-8" role="navigation" aria-label="Actions principales">
+  <a href="{% url 'create_ticket' %}" 
+     class="border border-black rounded hover:bg-gray-100 w-60 h-12 flex items-center justify-center"
+     aria-label="Créer une demande de critique">
+    Demander une critique
+  </a>
+  
+  <a href="{% url 'create_review_with_ticket' %}" 
+     class="border border-black rounded hover:bg-gray-100 w-60 h-12 flex items-center justify-center"
+     aria-label="Créer une nouvelle critique">
+    Créer une critique
+  </a>
+</section>
+
+<section class="space-y-3" role="main" aria-label="Liste des publications">
+  {% for post in posts %}
+    <article>
+      {% if post.content_type == 'TICKET' %}
+        {% include "reviews/partials/ticket_snippet.html" with post=post %}
+      {% elif post.content_type == 'REVIEW' %}
+        {% include "reviews/partials/review_snippet.html" with post=post %}
+      {% endif %}
+    </article>
+  {% empty %}
+    <p>Aucun post à afficher.</p>
+  {% endfor %}
+</section>
+{% endblock %}

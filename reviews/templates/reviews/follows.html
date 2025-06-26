@@ -1,0 +1,71 @@
+{% extends 'reviews/base.html' %}
+{% block page_header_title %}Suivre d'autres utilisateurs{% endblock %}
+
+{% block content %}
+
+<!-- 🔎 FORMULAIRE -->
+<section class="mb-10">
+  <h2 class="sr-only">Rechercher un utilisateur à suivre</h2>
+  <form method="post" class="flex justify-center items-center gap-4">
+    {% csrf_token %}
+    <label for="{{ form.username.id_for_label }}" class="sr-only">Nom d'utilisateur à rechercher</label>
+    {{ form.username }}
+    {% if form.username.errors %}
+      <div class="text-red-600 text-sm ml-2" role="alert" aria-live="polite">
+        {{ form.username.errors }}
+      </div>
+    {% endif %}
+    <button type="submit" class="border border-black rounded hover:bg-gray-100 px-4 py-2" aria-label="Rechercher et suivre cet utilisateur">Envoyer</button>
+  </form>
+</section>
+
+<!-- ABONNEMENTS -->
+<section class="mb-10">
+  <h2 class="font-semibold mb-4 text-center">Abonnements</h2>
+  <table class="w-full border border-black" role="table" aria-label="Liste de vos abonnements">
+    <thead class="sr-only">
+      <tr>
+        <th scope="col">Nom d'utilisateur</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for follow in follows %}
+        <tr class="border-t border-black">
+          <td class="p-2">{{ follow.followed_user.username }}</td>
+          <td class="p-2 text-right">
+            <form method="post" action="{% url 'unfollow' follow.id %}">
+              {% csrf_token %}
+              <button type="submit" class="border border-black rounded hover:bg-gray-100 px-3 py-1" 
+                      aria-label="Se désabonner de {{ follow.followed_user.username }}">Désabonner</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="2" class="p-2">Vous ne suivez encore personne.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<!-- ABONNÉS -->
+<section>
+  <h2 class="font-semibold mb-4 text-center">Abonnés</h2>
+  <table class="w-full border border-black" role="table" aria-label="Liste de vos abonnés">
+    <thead class="sr-only">
+      <tr>
+        <th scope="col">Nom d'utilisateur</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for follower in followers %}
+        <tr class="border-t border-black">
+          <td class="p-2">{{ follower.user.username }}</td>
+        </tr>
+      {% empty %}
+        <tr><td class="p-2">Aucun abonné.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

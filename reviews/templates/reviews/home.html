@@ -1,0 +1,36 @@
+{% extends "reviews/base.html" %}
+{% block title %}Accueil - LITReview{% endblock %}
+{% block content %}
+<div class="flex justify-center items-center py-20">
+  <div class="flex flex-col md:flex-row gap-16">
+    <section class="p-8 rounded text-center w-80">
+      <h2 class="text-lg font-semibold mb-6">Inscrivez-vous maintenant</h2>
+      <a href="{% url 'signup' %}" class="border border-black rounded hover:bg-gray-100 px-10 py-2" aria-label="Créer un nouveau compte">
+        S'inscrire
+      </a>
+    </section>
+    <section class="p-8 rounded text-center">
+      <h2 class="text-lg font-semibold mb-6">Connectez-vous</h2>
+      <form method="post" action="{% url 'home' %}" class="flex flex-col gap-4">
+        {% csrf_token %}
+
+        {% if login_error %}
+          <div class="text-red-600 mb-4" role="alert" aria-live="polite">{{ login_error }}</div>
+        {% endif %}
+
+        <div class="flex flex-col">
+          <label for="{{ login_form.username.id_for_label }}" class="sr-only">Nom d'utilisateur</label>
+          {{ login_form.username }}
+        </div>
+        <div class="flex flex-col">
+          <label for="{{ login_form.password.id_for_label }}" class="sr-only">Mot de passe</label>
+          {{ login_form.password }}
+        </div>
+        <button type="submit" class="border border-black rounded hover:bg-gray-100 py-2 ml-40" aria-label="Se connecter à votre compte">
+          Se connecter
+        </button>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

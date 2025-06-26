@@ -1,0 +1,80 @@
+{% extends "reviews/base.html" %}
+
+{% block page_header_title %}
+  {% if is_edit %}
+    Modifier une critique
+  {% else %}
+    Créer une critique
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <!-- Bloc du ticket en réponse -->
+  <section class="border border-black" aria-label="Ticket de référence">
+    <p class="mb-2 p-4">Vous êtes en train de poster en réponse à</p>
+
+    <article class="border border-black my-8 mx-16 p-4">
+      <header class="flex justify-between mb-2">
+        <p>{{ ticket.user.username }} a demandé une critique</p>
+        <time datetime="{{ ticket.time_created|date:'c' }}">{{ ticket.time_created|date:"H:i, d F Y" }}</time>
+      </header>
+
+      <h2 class="font-semibold">{{ ticket.title }}</h2>
+
+      {% if ticket.description %}
+        <p class="mb-2">{{ ticket.description }}</p>
+      {% endif %}
+
+      {% if ticket.image %}
+        <img src="{{ ticket.image.url }}" alt="Image du ticket : {{ ticket.title }}" class="w-40 my-2 ml-8">
+      {% endif %}
+    </article>
+  </section>
+
+  <!-- Formulaire de critique -->
+  <section class="border border-black p-4">
+    <h2 class="text-lg font-semibold mb-4">Critique</h2>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+
+      <div>
+        <label for="{{ form.headline.id_for_label }}" class="block mb-2 font-medium">Titre</label>
+        {{ form.headline }}
+        {% if form.headline.errors %}
+          <div class="text-red-600 text-sm mt-1" role="alert">{{ form.headline.errors }}</div>
+        {% endif %}
+      </div>
+
+      <fieldset>
+        <legend class="block mb-2 font-medium">Note</legend>
+        <div class="flex gap-4">
+          {% for radio in form.rating %}
+            <label class="inline-flex items-center gap-1">
+              {{ radio.tag }}
+              <span>{{ radio.choice_label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        {% if form.rating.errors %}
+          <div class="text-red-600 text-sm mt-1" role="alert">{{ form.rating.errors }}</div>
+        {% endif %}
+      </fieldset>
+
+      <div>
+        <label for="{{ form.body.id_for_label }}" class="block mb-2 font-medium">Commentaire</label>
+        {{ form.body }}
+        {% if form.body.errors %}
+          <div class="text-red-600 text-sm mt-1" role="alert">{{ form.body.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="text-right pt-4">
+        <button type="submit" class="border border-black rounded hover:bg-gray-100 px-8 py-2"
+                aria-label="{% if is_edit %}Modifier la critique{% else %}Publier la critique{% endif %}">
+          {% if is_edit %}Modifier{% else %}Envoyer{% endif %}
+        </button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

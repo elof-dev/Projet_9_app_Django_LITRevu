@@ -1,0 +1,54 @@
+{% extends "reviews/base.html" %}
+
+{% block page_header_title %}
+  {% if is_edit %}
+    Modifier un ticket
+  {% else %}
+    Créer un ticket
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+
+    <div>
+      <label for="{{ form.title.id_for_label }}" class="block mb-2 font-medium">Titre</label>
+      {{ form.title }}
+      {% if form.title.errors %}
+        <div class="text-red-600 text-sm mt-1" role="alert">{{ form.title.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <label for="{{ form.description.id_for_label }}" class="block mb-2 font-medium">Description</label>
+      {{ form.description }}
+      {% if form.description.errors %}
+        <div class="text-red-600 text-sm mt-1" role="alert">{{ form.description.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <label for="id_image" class="block mb-2 font-medium">Image</label>
+      <input type="file" name="image" id="id_image" class="px-3 py-2" accept="image/*" aria-describedby="image-help">
+      <p id="image-help" class="text-sm text-gray-600 mt-1">Formats acceptés : JPG, PNG, GIF</p>
+      {% if form.image.errors %}
+        <div class="text-red-600 text-sm mt-1" role="alert">{{ form.image.errors }}</div>
+      {% endif %}
+    </div>
+
+    {% if form.instance.image %}
+      <div>
+        <p class="mb-2 font-medium">Image actuelle :</p>
+        <img src="{{ form.instance.image.url }}" alt="Image actuelle du ticket" class="w-40 border rounded">
+      </div>
+    {% endif %}
+
+    <div class="text-right pt-4">
+      <button type="submit" class="border border-black rounded hover:bg-gray-100 px-8 py-2" 
+              aria-label="{% if is_edit %}Modifier le ticket{% else %}Créer le ticket{% endif %}">
+        {% if is_edit %}Modifier{% else %}Envoyer{% endif %}
+      </button>
+    </div>
+  </form>
+{% endblock %}

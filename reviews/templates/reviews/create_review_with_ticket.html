@@ -1,0 +1,93 @@
+{% extends "reviews/base.html" %}
+
+{% block page_header_title %}
+  {% if is_edit %}
+    Modifier une critique
+  {% else %}
+    Créer une critique
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Section TICKET -->
+    <section class="border border-black p-4">
+      <h2 class="text-lg font-semibold mb-4">Livre / article</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label for="{{ ticket_form.title.id_for_label }}" class="block mb-2 font-medium">Titre</label>
+          {{ ticket_form.title }}
+          {% if ticket_form.title.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ ticket_form.title.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="{{ ticket_form.description.id_for_label }}" class="block mb-2 font-medium">Description</label>
+          {{ ticket_form.description }}
+          {% if ticket_form.description.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ ticket_form.description.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="{{ ticket_form.image.id_for_label }}" class="block mb-2 font-medium">Image</label>
+          {{ ticket_form.image }}
+          <p class="text-sm text-gray-600 mt-1">Formats acceptés : JPG, PNG, GIF</p>
+          {% if ticket_form.image.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ ticket_form.image.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Section REVIEW -->
+    <section class="border border-black p-4">
+      <h2 class="text-lg font-semibold mb-4">Critique</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label for="{{ review_form.headline.id_for_label }}" class="block mb-2 font-medium">Titre</label>
+          {{ review_form.headline }}
+          {% if review_form.headline.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ review_form.headline.errors }}</div>
+          {% endif %}
+        </div>
+
+        <fieldset>
+          <legend class="block mb-2 font-medium">Note</legend>
+          <div class="flex gap-4">
+            {% for radio in review_form.rating %}
+              <label class="inline-flex items-center gap-1">
+                {{ radio.tag }}
+                <span>{{ radio.choice_label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          {% if review_form.rating.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ review_form.rating.errors }}</div>
+          {% endif %}
+        </fieldset>
+
+        <div>
+          <label for="{{ review_form.body.id_for_label }}" class="block mb-2 font-medium">Commentaire</label>
+          {{ review_form.body }}
+          {% if review_form.body.errors %}
+            <div class="text-red-600 text-sm mt-1" role="alert">{{ review_form.body.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="text-right pt-4">
+        <button type="submit" class="border border-black rounded hover:bg-gray-100 px-8 py-2"
+                aria-label="{% if is_edit %}Modifier la critique{% else %}Publier la critique{% endif %}">
+          {% if is_edit %}Modifier{% else %}Envoyer{% endif %}
+        </button>
+      </div>
+    </section>
+  </form>
+
+{% endblock %}

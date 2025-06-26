@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}LITReview{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans">
+  <!-- En-tête principal : barre de navigation et branding -->
+  <header class="font-bold border border-black px-6 py-4 text-lg">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="w-2/5">
+        {% if user.is_authenticated %}
+          <span>Bonjour, <strong>{{ user.username }}</strong></span>
+        {% endif %}
+      </div>
+      <div class="w-1/5 text-center">
+        <a href="{% url 'feed' %}" class="text-2xl font-bold hover:text-blue-600" aria-label="Retour à l'accueil LITReview">LITReview</a>
+      </div>
+      <div class="w-2/5 text-right">
+        {% if user.is_authenticated %}
+          <nav class="space-x-4" aria-label="Navigation principale">
+            <a href="{% url 'feed' %}" class="hover:text-blue-600">Flux</a>
+            <a href="{% url 'posts' %}" class="hover:text-blue-600">Posts</a>
+            <a href="{% url 'follows' %}" class="hover:text-blue-600">Abonnements</a>
+            <form method="post" action="{% url 'logout' %}" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="hover:text-blue-600" aria-label="Se déconnecter de votre compte">Se déconnecter</button>
+            </form>
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteneur principal du contenu des pages -->
+  <main class="p-8 max-w-4xl mx-auto" role="main">
+    {% block page_header %}
+      <h1 class="text-xl font-bold mb-6 text-center">
+        {% block page_header_title %}{% endblock %}
+      </h1>
+    {% endblock %}
+
+    <div class="text-lg">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</body>
+</html>
