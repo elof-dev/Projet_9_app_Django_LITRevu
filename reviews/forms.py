@@ -152,7 +152,18 @@ class FollowUserForm(forms.Form):
             raise forms.ValidationError("Cet utilisateur n'existe pas.")
 
         if self.current_user.following.filter(
-            followed_user=user_to_follow
+            followed_user=user_to_follow,
+            is_blocked=False
         ).exists():
             raise forms.ValidationError("Vous suivez déjà cet utilisateur.")
+        # Vérifier si cet utilisateur nous a bloqués
+        from .models import UserFollows
+        if UserFollows.objects.filter(
+            user=self.current_user,
+            followed_user=user_to_follow,
+            is_blocked=True
+        ).exists():
+            raise forms.ValidationError(
+                "Vous ne pouvez pas suivre cet utilisateur."
+            )
         return username

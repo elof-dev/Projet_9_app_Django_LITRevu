@@ -55,15 +55,44 @@
     <thead class="sr-only">
       <tr>
         <th scope="col">Nom d'utilisateur</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for follower in followers %}
         <tr class="border-t border-black">
           <td class="p-2">{{ follower.user.username }}</td>
+          <td class="p-2 text-right">
+            <form method="post" action="{% url 'block_user' follower.user.id %}" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir bloquer {{ follower.user.username }} ? Cette personne ne pourra plus vous suivre.')" 
+                  class="inline">
+              {% csrf_token %}
+              <button type="submit" class="border border-black rounded hover:bg-gray-100 px-3 py-1" 
+                      aria-label="Bloquer {{ follower.user.username }}">Bloquer</button>
+            </form>
+          </td>
         </tr>
       {% empty %}
-        <tr><td class="p-2">Aucun abonné.</td></tr>
+        <tr><td colspan="2" class="p-2">Aucun abonné.</td></tr>
+      {% endfor %}
+      
+      <!-- Utilisateurs bloqués -->
+      {% for blocked in blocked_users %}
+        <tr class="border-t border-black bg-red-50">
+          <td class="p-2">
+            <span class="text-red-600">{{ blocked.user.username }}</span>
+            <span class="text-xs text-red-500">(bloqué)</span>
+          </td>
+          <td class="p-2 text-right">
+            <form method="post" action="{% url 'unblock_user' blocked.user.id %}" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir débloquer {{ blocked.user.username }} ? Cette personne pourra à nouveau vous suivre.')" 
+                  class="inline">
+              {% csrf_token %}
+              <button type="submit" class="border border-red-600 text-red-600 rounded hover:bg-red-100 px-3 py-1" 
+                      aria-label="Débloquer {{ blocked.user.username }}">Débloquer</button>
+            </form>
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>

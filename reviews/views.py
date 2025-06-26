@@ -148,10 +148,11 @@ User = get_user_model()
 
 
 def get_users_viewable_tickets(user):
-    # Récupère les utilisateurs suivis par l'utilisateur connecté
-    followed_users = UserFollows.objects.filter(user=user).values_list(
-        'followed_user', flat=True
-    )
+    # Récupère les utilisateurs suivis par l'utilisateur connecté (non bloqués)
+    followed_users = UserFollows.objects.filter(
+        user=user,
+        is_blocked=False
+    ).values_list('followed_user', flat=True)
 
     # Récupère les tickets de l'utilisateur + ceux des suivis
     tickets = Ticket.objects.filter(user__in=list(followed_users) + [user])
@@ -160,10 +161,11 @@ def get_users_viewable_tickets(user):
 
 # Affiche les critiques que l'utilisateur peut voir
 def get_users_viewable_reviews(user):
-    # Utilisateurs suivis
-    followed_users = UserFollows.objects.filter(user=user).values_list(
-        'followed_user', flat=True
-    )
+    # Utilisateurs suivis (non bloqués)
+    followed_users = UserFollows.objects.filter(
+        user=user,
+        is_blocked=False
+    ).values_list('followed_user', flat=True)
 
     # Critiques faites par l'utilisateur ou par les suivis
     reviews_from_network = Review.objects.filter(
@@ -253,8 +255,15 @@ def edit_ticket(request, ticket_id):
 @login_required
 def follows_view(request):
     form = FollowUserForm(current_user=request.user)
-    follows = request.user.following.all()
-    followers = UserFollows.objects.filter(followed_user=request.user)
+    follows = request.user.following.filter(is_blocked=False)
+    followers = UserFollows.objects.filter(
+        followed_user=request.user,
+        is_blocked=False
+    )
+    blocked_users = UserFollows.objects.filter(
+        followed_user=request.user,
+        is_blocked=True
+    )
     # Affiche les utilisateurs que l'utilisateur suit
     if request.method == 'POST':
         form = FollowUserForm(request.POST, current_user=request.user)
@@ -271,7 +280,8 @@ def follows_view(request):
     return render(request, 'reviews/follows.html', {
         'form': form,
         'follows': follows,
-        'followers': followers
+        'followers': followers,
+        'blocked_users': blocked_users
     })
 
 
@@ -282,6 +292,45 @@ def unfollow_view(request, follow_id):
         UserFollows, id=follow_id, user=request.user
     )
     follow_instance.delete()
+    return redirect('follows')
+
+
+# Blocage d'un utilisateur
+@login_required
+def block_user(request, user_id):
+    user_to_block = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        # Trouver la relation existante (user_to_block suit request.user)
+        follow_relation = get_object_or_404(
+            UserFollows,
+            user=user_to_block,
+            followed_user=request.user
+        )
+        # Marquer comme bloqué au lieu de supprimer
+        follow_relation.is_blocked = True
+        follow_relation.save()
+        return redirect('follows')
+    # Si ce n'est pas un POST, rediriger vers follows
+    return redirect('follows')
+
+
+# Déblocage d'un utilisateur
+@login_required
+def unblock_user(request, user_id):
+    user_to_unblock = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        # Trouver la relation bloquée
+        follow_relation = get_object_or_404(
+            UserFollows,
+            user=user_to_unblock,
+            followed_user=request.user,
+            is_blocked=True
+        )
+        # Marquer comme non bloqué (redevient un abonnement normal)
+        follow_relation.is_blocked = False
+        follow_relation.save()
+        return redirect('follows')
+    # Si ce n'est pas un POST, rediriger vers follows
     return redirect('follows')
 
 

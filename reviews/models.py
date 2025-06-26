@@ -38,9 +38,12 @@ class UserFollows(models.Model):
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='followed_by')
+    is_blocked = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'followed_user',)
 
     def __str__(self):
+        if self.is_blocked:
+            return f"{self.followed_user} blocked {self.user}"
         return f"{self.user} follows {self.followed_user}"
