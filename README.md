@@ -18,7 +18,7 @@ Un onglet abonnements permet de suivre / rechercher / bloquer des abonnés.
 
 1. **Cloner le projet**
 ```bash
-git clone <https://github.com/elof-dev/Projet_9_app_Django_LITRevu>
+git clone https://github.com/elof-dev/Projet_9_app_Django_LITRevu
 cd Projet_9_app_Django_LITRevu
 ```
 
@@ -41,31 +41,27 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-5. **Appliquer les migrations**
-```bash
-python manage.py migrate
-```
-
-6. **Créer un superutilisateur** (optionnel)
-```bash
-python manage.py createsuperuser
-```
-
-7. **Lancer le serveur**
+5. **Lancer le serveur** (la base de données avec données de test est incluse)
 ```bash
 python manage.py runserver
 ```
 
-8. **Accéder à l'application**
+6. **Accéder à l'application**
    - Ouvrir http://127.0.0.1:8000 dans votre navigateur
+   - **Comptes de démonstration disponibles :**
+     - Utilisateur :
+        - `admin` / `mdp@admin123` (superutilisateur)
+        - `sarahj` / `mdp@admin123` (admin abonné à sarahj mais pas l'inverse)
+        - `jean_5679` / `mdp@admin123` (admin et jean_5679 se suivent)
 
-## Utilisation
+## Utilisation principale
 
 1. **S'inscrire** ou se connecter
-2. **Créer des tickets** pour demander des critiques
-3. **Publier des critiques** sur les tickets des autres ou sur ses propres tickets
-4. **S'abonner** à des utilisateurs pour voir leurs publications
-5. **Gérer ses abonnements** et bloquer si besoin
+2. **Demander une critique** en début de feed pour publier un ticket auquel les autres utilisateurs pourront donner leur avis (créer une critique)
+3. **Créer une critique** en début de feed pour publier un ticket et une critique en même temps
+4. **Créer une critique** dans le feed, en réponse à une demande de critique (à un ticket) d'un autre utilisateur
+5. **Modifier ou supprimer ses posts** dans l'onglet posts
+6. **Gérer ses abonnements** et bloquer certains utilisateurs si besoin
 
 ## Structure du Projet
 
@@ -79,7 +75,7 @@ LITRevu/
 │   ├── urls.py       # URLs de l'app
 │   └── templates/    # Templates HTML
 ├── media/            # Fichiers uploadés
-├── db.sqlite3        # Base de données
+├── db.sqlite3        # Base de données (avec données de test)
 ├── manage.py         # Script Django
 └── requirements.txt  # Dépendances
 ```
