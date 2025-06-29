@@ -8,7 +8,7 @@
     {% else %}
       <p>{{ post.user.username }} a publié une critique</p>
     {% endif %}
-    <time datetime="{{ post.time_created|date:'c' }}">{{ post.time_created|date:"H:i, d F Y" }}</time>
+    <time datetime="{{ post.time_updated|date:'c' }}">{{ post.time_updated|date:"H:i, d F Y" }}</time>
   </header>
 
   <!-- Titre de la critique -->

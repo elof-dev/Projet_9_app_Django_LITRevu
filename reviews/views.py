@@ -63,7 +63,7 @@ def feed(request):
 
     posts = sorted(
         chain(tickets, reviews),
-        key=lambda post: post.time_created,
+        key=lambda post: post.time_updated,
         reverse=True,
     )
 
@@ -346,7 +346,7 @@ def posts(request):
 
     posts = sorted(
         chain(user_tickets, user_reviews),
-        key=lambda post: post.time_created,
+        key=lambda post: post.time_updated,
         reverse=True
     )
 

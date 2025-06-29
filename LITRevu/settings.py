@@ -145,3 +145,12 @@ LOGIN_REDIRECT_URL = '/feed/'
 LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = '/'
+
+# Durée de vie du cookie de session (en secondes) : ici 30 minutes
+SESSION_COOKIE_AGE = 30 * 60  
+
+# Réinitialise le timer d’expiration à chaque requête utilisateur
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Détruit la session à la fermeture du navigateur
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

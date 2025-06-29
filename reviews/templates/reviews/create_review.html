@@ -16,7 +16,7 @@
     <article class="border border-black my-8 mx-16 p-4">
       <header class="flex justify-between mb-2">
         <p>{{ ticket.user.username }} a demandé une critique</p>
-        <time datetime="{{ ticket.time_created|date:'c' }}">{{ ticket.time_created|date:"H:i, d F Y" }}</time>
+        <time datetime="{{ ticket.time_updated|date:'c' }}">{{ ticket.time_updated|date:"H:i, d F Y" }}</time>
       </header>
 
       <h2 class="font-semibold">{{ ticket.title }}</h2>

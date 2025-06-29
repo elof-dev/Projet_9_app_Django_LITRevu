@@ -10,9 +10,13 @@ class Ticket(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
+    time_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} (by {self.user})"
+    
+    class Meta:
+        ordering = ['-time_updated']
 
 
 class Review(models.Model):
@@ -24,9 +28,13 @@ class Review(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(auto_now_add=True)
+    time_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.headline} - {self.rating}/5"
+    
+    class Meta:
+        ordering = ['-time_created']
 
 
 class UserFollows(models.Model):
